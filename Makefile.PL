@@ -31,11 +31,13 @@ my %WriteMakefileArgs = (
     "Dist::Zilla::Plugin::Bugtracker" => "1.102670",
     "Dist::Zilla::Plugin::ChangelogFromGit" => "0.002",
     "Dist::Zilla::Plugin::CheckChangesHasContent" => "0.003",
+    "Dist::Zilla::Plugin::CheckPrereqsIndexed" => "0.007",
     "Dist::Zilla::Plugin::Clean" => "0.002",
     "Dist::Zilla::Plugin::DualBuilders" => "1.001",
     "Dist::Zilla::Plugin::Git" => "1.110500",
     "Dist::Zilla::Plugin::Homepage" => "1.101420",
     "Dist::Zilla::Plugin::InstallGuide" => "1.101461",
+    "Dist::Zilla::Plugin::LocaleMsgfmt" => "1.203",
     "Dist::Zilla::Plugin::MetaData::BuiltWith" => "0.01018204",
     "Dist::Zilla::Plugin::MetaProvides::Package" => "1.12044908",
     "Dist::Zilla::Plugin::MinimumPerl" => "1.001",
@@ -52,7 +54,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.002",
+  "VERSION" => "0.003",
   "test" => {
     "TESTS" => "t/*.t"
   }

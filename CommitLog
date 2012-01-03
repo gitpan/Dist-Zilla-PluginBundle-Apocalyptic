@@ -3,8 +3,43 @@ Changes from 2011-01-03 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.002 at 2012-01-03 01:34:47 +0000
+version 0.003 at 2012-01-03 05:42:23 +0000
 ------------------------------------------
+
+  Change: fc51d231d7624d9895664d4e3f0afbb5cf8906df
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2012-01-03 00:41:04 +0000
+
+    add use of CheckPrereqsIndexed 
+
+  Change: 1e950fc8a014c6a907abad47d42895806da7789c
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2012-01-03 00:31:42 +0000
+
+    use LocaleMsgfmt 
+
+  Change: eda17e6999e0e512e31c5a70ac2978f9367b4613
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2012-01-03 00:21:17 +0000
+
+    add output of dzil dumpphases 
+
+------------------------------------------
+version 0.002 at 2012-01-03 01:35:33 +0000
+------------------------------------------
+
+  Change: 249e9d74a1e970bf600233c8768be4b18e6ecb3c
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2012-01-02 20:35:33 +0000
+
+    New CPAN release of Dist-Zilla-PluginBundle-Apocalyptic - v0.002
+
+    Released: 2012-01-03 01:34:43 UTC
+
+    Use Dist::Zilla::Plugin::Clean
+
+    Replace Dist::Zilla::Plugin::CompileTests with DZP::Test::Compile as
+    it was deprecated 
 
   Change: a85c5d598f90b4c9b7125cd613eddd07afdef78f
   Author: Apocalypse <APOCAL@cpan.org>

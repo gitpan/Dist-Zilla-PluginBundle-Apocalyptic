@@ -9,7 +9,7 @@
 use strict; use warnings;
 package Dist::Zilla::PluginBundle::Apocalyptic;
 {
-  $Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.002';
+  $Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.003';
 }
 BEGIN {
   $Dist::Zilla::PluginBundle::Apocalyptic::AUTHORITY = 'cpan:APOCAL';
@@ -43,6 +43,8 @@ use Dist::Zilla::Plugin::ArchiveRelease 3.01;
 use Dist::Zilla::Plugin::ReportVersions::Tiny 1.02;
 use Dist::Zilla::Plugin::MetaData::BuiltWith 0.01018204;
 use Dist::Zilla::Plugin::Clean 0.002;
+use Dist::Zilla::Plugin::LocaleMsgfmt 1.203;
+use Dist::Zilla::Plugin::CheckPrereqsIndexed 0.007;
 
 # TODO fix this: http://changes.cpanhq.org/author/APOCAL
 
@@ -153,6 +155,11 @@ EOC
 		'PodWeaver' => {
 			'config_plugin' => '@Apocalyptic',
 		}
+	],
+	[
+		'LocaleMsgfmt' => {
+			'locale' => 'share/locale',
+		},
 	],
 
 #	; -- update the Changelog
@@ -265,6 +272,7 @@ EOC
 	],
 	qw(
 		TestRelease
+		CheckPrereqsIndexed
 		ConfirmRelease
 	),
 
@@ -326,7 +334,7 @@ Dist::Zilla::PluginBundle::Apocalyptic - Let the apocalypse build your dist!
 
 =head1 VERSION
 
-  This document describes v0.002 of Dist::Zilla::PluginBundle::Apocalyptic - released January 02, 2012 as part of Dist-Zilla-PluginBundle-Apocalyptic.
+  This document describes v0.003 of Dist::Zilla::PluginBundle::Apocalyptic - released January 03, 2012 as part of Dist-Zilla-PluginBundle-Apocalyptic.
 
 =head1 DESCRIPTION
 
@@ -351,6 +359,8 @@ Don't forget the new global config.ini file added in L<Dist::Zilla> v4!
 	[%PAUSE]
 	username = APOCAL
 	password = myawesomepassword
+
+=head2 dist.ini
 
 This is equivalent to setting this in your dist.ini:
 
@@ -382,6 +392,8 @@ This is equivalent to setting this in your dist.ini:
 	[PkgVersion]			; put the "our $VERSION = ...;" line in modules
 	[PodWeaver]			; weave our POD and add useful boilerplate
 	config_plugin = @Apocalyptic
+	[LocaleMsgfmt]			; compile .po files to .mo files in share/locale
+	locale = share/locale
 
 	; -- update the Changelog
 	[NextRelease]
@@ -431,6 +443,7 @@ This is equivalent to setting this in your dist.ini:
 	[Git::Check]			; check working path for any uncommitted stuff ( exempt Changes because it will be committed after release )
 	changelog = Changes
 	[TestRelease]                   ; make sure that we won't release a FAIL distro :)
+	[CheckPrereqsIndexed]		; make sure that our prereqs actually exist on CPAN
 	[ConfirmRelease]		; double-check that we ACTUALLY want a release, ha!
 
 	; -- release
@@ -470,6 +483,122 @@ or the desired plugin configuration manually.
 	remove = Git::Push
 	[Git::Push]
 	push_to = gitorious
+
+=head2 dumpphases
+
+Here is an output of a distribution using Dist::Zilla and only this bundle:
+
+	apoc@apoc-x300:~/mygit/perl-dist-zilla-pluginbundle-apocalyptic$ dzil dumpphases
+
+	Phase: Version
+	 - description: Provide a version for the distribution
+	 - role: -VersionProvider
+	 * @Apocalyptic/Git::NextVersion => Dist::Zilla::Plugin::Git::NextVersion
+
+	Phase: MetaData
+	 - description: Specify MetaData for the distribution
+	 - role: -MetaProvider
+	 * @Apocalyptic/Authority => Dist::Zilla::Plugin::Authority
+	 * @Apocalyptic/Bugtracker => Dist::Zilla::Plugin::Bugtracker
+	 * @Apocalyptic/Homepage => Dist::Zilla::Plugin::Homepage
+	 * @Apocalyptic/MetaConfig => Dist::Zilla::Plugin::MetaConfig
+	 * @Apocalyptic/MetaData::BuiltWith => Dist::Zilla::Plugin::MetaData::BuiltWith
+	 * @Apocalyptic/Repository => Dist::Zilla::Plugin::Repository
+	 * @Apocalyptic/MetaResources => Dist::Zilla::Plugin::MetaResources
+	 * @Apocalyptic/MetaNoIndex => Dist::Zilla::Plugin::MetaNoIndex
+	 * @Apocalyptic/MetaProvides::Package => Dist::Zilla::Plugin::MetaProvides::Package
+
+	Phase: Before Build
+	 - role: -BeforeBuild
+	 * @Apocalyptic/LocaleMsgfmt => Dist::Zilla::Plugin::LocaleMsgfmt
+
+	Phase: Gather Files
+	 - role: -FileGatherer
+	 * @Apocalyptic/GatherDir => Dist::Zilla::Plugin::GatherDir
+	 * @Apocalyptic/MANIFEST.SKIP => Dist::Zilla::Plugin::GenerateFile
+	 * @Apocalyptic/Test::Compile => Dist::Zilla::Plugin::Test::Compile
+	 * @Apocalyptic/ApocalypseTests => Dist::Zilla::Plugin::ApocalypseTests
+	 * @Apocalyptic/ReportVersions::Tiny => Dist::Zilla::Plugin::ReportVersions::Tiny
+	 * @Apocalyptic/ChangelogFromGit => Dist::Zilla::Plugin::ChangelogFromGit
+	 * @Apocalyptic/License => Dist::Zilla::Plugin::License
+	 * @Apocalyptic/MetaYAML => Dist::Zilla::Plugin::MetaYAML
+	 * @Apocalyptic/MetaJSON => Dist::Zilla::Plugin::MetaJSON
+	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
+	 * @Apocalyptic/Manifest => Dist::Zilla::Plugin::Manifest
+
+	Phase: Prune Files
+	 - role: -FilePruner
+	 * @Apocalyptic/PruneCruft => Dist::Zilla::Plugin::PruneCruft
+	 * @Apocalyptic/ManifestSkip => Dist::Zilla::Plugin::ManifestSkip
+	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
+
+	Phase: Munge Files
+	 - role: -FileMunger
+	 * @Apocalyptic/ApocalypseTests => Dist::Zilla::Plugin::ApocalypseTests
+	 * @Apocalyptic/Prepender => Dist::Zilla::Plugin::Prepender
+	 * @Apocalyptic/Authority => Dist::Zilla::Plugin::Authority
+	 * @Apocalyptic/PkgVersion => Dist::Zilla::Plugin::PkgVersion
+	 * @Apocalyptic/PodWeaver => Dist::Zilla::Plugin::PodWeaver
+	 * @Apocalyptic/NextRelease => Dist::Zilla::Plugin::NextRelease
+
+	Phase: Register Preqreqs
+	 - role: -PrereqSource
+	 * @Apocalyptic/AutoPrereqs => Dist::Zilla::Plugin::AutoPrereqs
+	 * @Apocalyptic/MinimumPerl => Dist::Zilla::Plugin::MinimumPerl
+	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
+	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
+	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
+
+	Phase: Install Tool
+	 - role: -InstallTool
+	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
+	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
+	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
+	 * @Apocalyptic/ReadmeFromPod => Dist::Zilla::Plugin::ReadmeFromPod
+	 * @Apocalyptic/InstallGuide => Dist::Zilla::Plugin::InstallGuide
+
+	Phase: After Build
+	 - role: -AfterBuild
+	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
+	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
+
+	Phase: Before Archive
+	 - role: -BeforeArchive
+	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
+
+	Phase: Releaser
+	 - role: -Releaser
+	 * @Apocalyptic/UploadToCPAN => Dist::Zilla::Plugin::UploadToCPAN
+	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
+
+	Phase: Before Release
+	 - role: -BeforeRelease
+	 * @Apocalyptic/CheckChangesHasContent => Dist::Zilla::Plugin::CheckChangesHasContent
+	 * @Apocalyptic/Git::Check => Dist::Zilla::Plugin::Git::Check
+	 * @Apocalyptic/TestRelease => Dist::Zilla::Plugin::TestRelease
+	 * @Apocalyptic/CheckPrereqsIndexed => Dist::Zilla::Plugin::CheckPrereqsIndexed
+	 * @Apocalyptic/ConfirmRelease => Dist::Zilla::Plugin::ConfirmRelease
+	 * @Apocalyptic/UploadToCPAN => Dist::Zilla::Plugin::UploadToCPAN
+	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
+	 * @Apocalyptic/Git::Tag => Dist::Zilla::Plugin::Git::Tag
+
+	Phase: After Release
+	 - role: -AfterRelease
+	 * @Apocalyptic/NextRelease => Dist::Zilla::Plugin::NextRelease
+	 * @Apocalyptic/Git::Commit => Dist::Zilla::Plugin::Git::Commit
+	 * @Apocalyptic/Git::Tag => Dist::Zilla::Plugin::Git::Tag
+	 * @Apocalyptic/Git::Push => Dist::Zilla::Plugin::Git::Push
+	 * @Apocalyptic/Clean => Dist::Zilla::Plugin::Clean
+
+	Phase: Test Runner
+	 - role: -TestRunner
+	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
+	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
+
+	Phase: Build Runner
+	 - role: -BuildRunner
+	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
+	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
 
 =head1 Future Plans
 
@@ -543,10 +672,6 @@ create the .project/.includepath/.settings stuff
 =head3 submit project to ohloh
 
 we need more perl projects on ohloh! there's L<WWW::Ohloh::API>
-
-=head2 locale files
-
-L<Dist::Zilla::Plugin::LocaleMsgfmt> looks interesting, I should auto-enable it if I find the .po files?
 
 =head2 DZP::PkgDist
 

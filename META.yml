@@ -23,7 +23,7 @@ no_index:
 provides:
   Dist::Zilla::PluginBundle::Apocalyptic:
     file: lib/Dist/Zilla/PluginBundle/Apocalyptic.pm
-    version: 0.002
+    version: 0.003
 requires:
   Dist::Zilla::Plugin::ApocalypseTests: 0.01
   Dist::Zilla::Plugin::ArchiveRelease: 3.01
@@ -31,11 +31,13 @@ requires:
   Dist::Zilla::Plugin::Bugtracker: 1.102670
   Dist::Zilla::Plugin::ChangelogFromGit: 0.002
   Dist::Zilla::Plugin::CheckChangesHasContent: 0.003
+  Dist::Zilla::Plugin::CheckPrereqsIndexed: 0.007
   Dist::Zilla::Plugin::Clean: 0.002
   Dist::Zilla::Plugin::DualBuilders: 1.001
   Dist::Zilla::Plugin::Git: 1.110500
   Dist::Zilla::Plugin::Homepage: 1.101420
   Dist::Zilla::Plugin::InstallGuide: 1.101461
+  Dist::Zilla::Plugin::LocaleMsgfmt: 1.203
   Dist::Zilla::Plugin::MetaData::BuiltWith: 0.01018204
   Dist::Zilla::Plugin::MetaProvides::Package: 1.12044908
   Dist::Zilla::Plugin::MinimumPerl: 1.001
@@ -57,7 +59,7 @@ resources:
   homepage: http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic/
   license: http://dev.perl.org/licenses/
   repository: git://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic.git
-version: 0.002
+version: 0.003
 x_BuiltWith:
   modules:
     Dist::Zilla::Plugin::ApocalypseTests: 1.001
@@ -66,11 +68,13 @@ x_BuiltWith:
     Dist::Zilla::Plugin::Bugtracker: 1.111080
     Dist::Zilla::Plugin::ChangelogFromGit: 0.003
     Dist::Zilla::Plugin::CheckChangesHasContent: 0.003
+    Dist::Zilla::Plugin::CheckPrereqsIndexed: 0.007
     Dist::Zilla::Plugin::Clean: 0.02
     Dist::Zilla::Plugin::DualBuilders: 1.001
     Dist::Zilla::Plugin::Git: 1.113560
     Dist::Zilla::Plugin::Homepage: 1.101420
     Dist::Zilla::Plugin::InstallGuide: 1.101461
+    Dist::Zilla::Plugin::LocaleMsgfmt: 1.203
     Dist::Zilla::Plugin::MetaData::BuiltWith: 0.01018205
     Dist::Zilla::Plugin::MetaProvides::Package: 1.12060501
     Dist::Zilla::Plugin::MinimumPerl: 1.003
@@ -154,6 +158,10 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::PodWeaver
       name: '@Apocalyptic/PodWeaver'
       version: 3.101641
+    -
+      class: Dist::Zilla::Plugin::LocaleMsgfmt
+      name: '@Apocalyptic/LocaleMsgfmt'
+      version: 1.203
     -
       class: Dist::Zilla::Plugin::NextRelease
       name: '@Apocalyptic/NextRelease'
@@ -256,6 +264,10 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Git::Check
       name: '@Apocalyptic/Git::Check'
       version: 1.113560
+    -
+      class: Dist::Zilla::Plugin::CheckPrereqsIndexed
+      name: '@Apocalyptic/CheckPrereqsIndexed'
+      version: 0.007
     -
       class: Dist::Zilla::Plugin::TestRelease
       name: '@Apocalyptic/TestRelease'
