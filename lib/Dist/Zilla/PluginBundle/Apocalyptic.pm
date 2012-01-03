@@ -1,15 +1,15 @@
 #
 # This file is part of Dist-Zilla-PluginBundle-Apocalyptic
 #
-# This software is copyright (c) 2011 by Apocalypse.
+# This software is copyright (c) 2012 by Apocalypse.
 #
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
 use strict; use warnings;
 package Dist::Zilla::PluginBundle::Apocalyptic;
-BEGIN {
-  $Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.001';
+{
+  $Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.002';
 }
 BEGIN {
   $Dist::Zilla::PluginBundle::Apocalyptic::AUTHORITY = 'cpan:APOCAL';
@@ -22,7 +22,7 @@ use Moose 1.21;
 # The plugins we use ( excluding ones bundled in dzil )
 with 'Dist::Zilla::Role::PluginBundle::Easy' => { -version => '4.200004' };	# basically sets the dzil version
 use Pod::Weaver::PluginBundle::Apocalyptic 0.002;
-use Dist::Zilla::Plugin::CompileTests 1.103030;
+use Dist::Zilla::Plugin::Test::Compile 1.112820;
 use Dist::Zilla::Plugin::ApocalypseTests 0.01;
 use Dist::Zilla::Plugin::Prepender 1.101590;
 use Dist::Zilla::Plugin::Authority 1.001;
@@ -42,6 +42,9 @@ use Dist::Zilla::Plugin::Git 1.110500;
 use Dist::Zilla::Plugin::ArchiveRelease 3.01;
 use Dist::Zilla::Plugin::ReportVersions::Tiny 1.02;
 use Dist::Zilla::Plugin::MetaData::BuiltWith 0.01018204;
+use Dist::Zilla::Plugin::Clean 0.002;
+
+# TODO fix this: http://changes.cpanhq.org/author/APOCAL
 
 # TODO follow up on those local patches:
 # Plugin::ChangelogFromGit - better HEAD tag name ( https://github.com/rcaputo/dzp-changelogfromgit/pull/1 )
@@ -50,12 +53,14 @@ sub configure {
 	my $self = shift;
 
 #	; -- start off by bumping the version
-	$self->add_plugins( [ 'Git::NextVersion' => {
-		'version_regexp' => '^release-(.+)$',
-	} ] );
+	$self->add_plugins(
+	[
+		'Git::NextVersion' => {
+			'version_regexp' => '^release-(.+)$',
+		}
+	],
 
 #	; -- start the basic dist skeleton
-	$self->add_plugins(
 	qw(
 		GatherDir
 		PruneCruft
@@ -119,23 +124,21 @@ EOC
 		'ManifestSkip' => {
 			'skipfile' => 'MANIFEST.SKIP',
 		}
-	] );
+	],
 
 #	; -- Generate our tests
-	$self->add_plugins(
 	[
-		'CompileTests' => {
+		'Test::Compile' => {
 			# fake the $ENV{HOME} in case smokers don't like us
 			'fake_home' => 1,
-		},
+		}
 	],
 	qw(
 		ApocalypseTests
 		ReportVersions::Tiny
-	) );
+	),
 
 #	; -- munge files
-	$self->add_plugins(
 	[
 		'Prepender' => {
 			'copyright'	=> 1,
@@ -150,10 +153,9 @@ EOC
 		'PodWeaver' => {
 			'config_plugin' => '@Apocalyptic',
 		}
-	], );
+	],
 
 #	; -- update the Changelog
-	$self->add_plugins(
 	[
 		'NextRelease' => {
 			'time_zone'	=> 'UTC',
@@ -166,7 +168,8 @@ EOC
 			'tag_regexp'	=> '^release-(.+)$',
 			'file_name'	=> 'CommitLog',
 		}
-	], );
+	],
+	);
 
 #	; -- generate/process meta-information
 	if ( -d 'bin' ) {
@@ -204,7 +207,8 @@ EOC
 			# TODO add the usual list of stuff found in my POD? ( cpants, bla bla )
 			'license'	=> 'http://dev.perl.org/licenses/',
 		}
-	], );
+	],
+	);
 
 #	; -- generate meta files
 	my @dirs;
@@ -244,11 +248,11 @@ EOC
 			'sign' => 'always',
 		}
 	],
-		'Manifest',
-	);
+	qw(
+		Manifest
+	),
 
 #	; -- pre-release
-	$self->add_plugins(
 	[
 		'CheckChangesHasContent' => {
 			'changelog'	=> 'Changes',
@@ -262,13 +266,14 @@ EOC
 	qw(
 		TestRelease
 		ConfirmRelease
-	) );
+	),
 
 #	; -- release
-	$self->add_plugins( 'UploadToCPAN' );
+	qw(
+		UploadToCPAN
+	),
 
 #	; -- post-release
-	$self->add_plugins(
 	[
 		'ArchiveRelease' => {
 			'directory' => 'releases',
@@ -293,7 +298,11 @@ EOC
 			# TODO add "github", "gitorious" support somehow... introspect the Git config?
 			'push_to'	=> 'origin',
 		}
-	], );
+	],
+	qw(
+		Clean
+	),
+	);
 }
 
 no Moose;
@@ -305,7 +314,7 @@ __END__
 =pod
 
 =for :stopwords Apocalypse cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee
-diff irc mailto metadata placeholders
+diff irc mailto metadata placeholders metacpan
 
 =encoding utf-8
 
@@ -317,7 +326,7 @@ Dist::Zilla::PluginBundle::Apocalyptic - Let the apocalypse build your dist!
 
 =head1 VERSION
 
-  This document describes v0.001 of Dist::Zilla::PluginBundle::Apocalyptic - released March 05, 2011 as part of Dist-Zilla-PluginBundle-Apocalyptic.
+  This document describes v0.002 of Dist::Zilla::PluginBundle::Apocalyptic - released January 02, 2012 as part of Dist-Zilla-PluginBundle-Apocalyptic.
 
 =head1 DESCRIPTION
 
@@ -360,7 +369,7 @@ This is equivalent to setting this in your dist.ini:
 	skipfile = MANIFEST.SKIP
 
 	; -- Generate our tests
-	[CompileTests]			; Create a t/00-compile.t file that auto-compiles every module in the dist
+	[Test::Compile]			; Create a t/00-compile.t file that auto-compiles every module in the dist
 	fake_home = 1			; fakes $ENV{HOME} just in case
 	[ApocalypseTests]		; Create a t/apocalypse.t file that runs Test::Apocalypse
 	[ReportVersions::Tiny]		; Report the versions of our prereqs
@@ -370,7 +379,6 @@ This is equivalent to setting this in your dist.ini:
 	copyright = 1
 	line = use strict; use warnings;
 	[Authority]			; put the $AUTHORITY line in modules and the metadata
-	authority = cpan:APOCAL
 	[PkgVersion]			; put the "our $VERSION = ...;" line in modules
 	[PodWeaver]			; weave our POD and add useful boilerplate
 	config_plugin = @Apocalyptic
@@ -400,13 +408,8 @@ This is equivalent to setting this in your dist.ini:
 	license = http://dev.perl.org/licenses/
 
 	; -- generate meta files
-	[MetaNoIndex]			; tell PAUSE to not index those stuff ( if it exists )
-	directory = inc
-	directory = t
-	directory = xt
-	directory = examples
-	directory = share
-	directory = eg
+	[MetaNoIndex]			; tell PAUSE to not index those directories
+	directory = inc t xt examples share eg mylib
 	[MetaProvides::Package]		; get provides from package definitions in files
 	meta_noindex = 1
 	[License]			; create LICENSE file
@@ -446,6 +449,7 @@ This is equivalent to setting this in your dist.ini:
 	tag_message = Tagged release-%v
 	[Git::Push]			; automatically push to the "origin" defined in .git/config
 	push_to = origin
+	[Clean]				; run dzil clean so we have no cruft :)
 
 However, this plugin bundle does A LOT of things, so you would need to read the config carefully to see if it does
 anything you don't want to do. You can override the options simply by removing the offending plugin from the bundle
@@ -577,7 +581,17 @@ in addition to those websites please use your favorite search engine to discover
 
 =item *
 
+MetaCPAN
+
+A modern, open-source CPAN search engine, useful to view POD in HTML format.
+
+L<http://metacpan.org/release/Dist-Zilla-PluginBundle-Apocalyptic>
+
+=item *
+
 Search CPAN
+
+The default CPAN search engine, useful to view POD in HTML format.
 
 L<http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
@@ -585,11 +599,15 @@ L<http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
 RT: CPAN's Bug Tracker
 
+The RT ( Request Tracker ) website is the default bug/issue tracking system for CPAN.
+
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
-AnnoCPAN: Annotated CPAN documentation
+AnnoCPAN
+
+The AnnoCPAN is a website that allows community annotations of Perl module documentation.
 
 L<http://annocpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
@@ -597,31 +615,49 @@ L<http://annocpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
 CPAN Ratings
 
+The CPAN Ratings is a website that allows community ratings and reviews of Perl modules.
+
 L<http://cpanratings.perl.org/d/Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
 CPAN Forum
 
+The CPAN Forum is a web forum for discussing Perl modules.
+
 L<http://cpanforum.com/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
-CPANTS Kwalitee
+CPANTS
+
+The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
 
 L<http://cpants.perl.org/dist/overview/Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
-CPAN Testers Results
+CPAN Testers
 
-L<http://cpantesters.org/distro/D/Dist-Zilla-PluginBundle-Apocalyptic.html>
+The CPAN Testers is a network of smokers who run automated tests on uploaded CPAN distributions.
+
+L<http://www.cpantesters.org/distro/D/Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
 CPAN Testers Matrix
 
+The CPAN Testers Matrix is a website that provides a visual overview of the test results for a distribution on various Perls/platforms.
+
 L<http://matrix.cpantesters.org/?dist=Dist-Zilla-PluginBundle-Apocalyptic>
+
+=item *
+
+CPAN Testers Dependencies
+
+The CPAN Testers Dependencies is a website that shows a chart of the test results of all dependencies for a distribution.
+
+L<http://deps.cpantesters.org/?module=Dist::Zilla::PluginBundle::Apocalyptic>
 
 =back
 
@@ -680,35 +716,34 @@ Apocalypse <APOCAL@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Apocalypse.
+This software is copyright (c) 2012 by Apocalypse.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-The full text of the license can be found in the LICENSE file included with this distribution.
+The full text of the license can be found in the
+'LICENSE' file included with this distribution.
 
 =head1 DISCLAIMER OF WARRANTY
 
-BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT
-WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER
-PARTIES PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND,
-EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE
-SOFTWARE IS WITH YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME
-THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
+OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
 IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE LIABLE
-TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
-SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGES.
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
 
 =cut
 

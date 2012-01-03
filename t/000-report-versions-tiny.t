@@ -54,7 +54,7 @@ eval { $v .= pmver('Dist::Zilla::Plugin::Authority','1.001') };
 eval { $v .= pmver('Dist::Zilla::Plugin::Bugtracker','1.102670') };
 eval { $v .= pmver('Dist::Zilla::Plugin::ChangelogFromGit','0.002') };
 eval { $v .= pmver('Dist::Zilla::Plugin::CheckChangesHasContent','0.003') };
-eval { $v .= pmver('Dist::Zilla::Plugin::CompileTests','1.103030') };
+eval { $v .= pmver('Dist::Zilla::Plugin::Clean','0.002') };
 eval { $v .= pmver('Dist::Zilla::Plugin::DualBuilders','1.001') };
 eval { $v .= pmver('Dist::Zilla::Plugin::Git','1.110500') };
 eval { $v .= pmver('Dist::Zilla::Plugin::Homepage','1.101420') };
@@ -68,6 +68,7 @@ eval { $v .= pmver('Dist::Zilla::Plugin::ReadmeFromPod','0.14') };
 eval { $v .= pmver('Dist::Zilla::Plugin::ReportVersions::Tiny','1.02') };
 eval { $v .= pmver('Dist::Zilla::Plugin::Repository','0.16') };
 eval { $v .= pmver('Dist::Zilla::Plugin::Signature','1.100930') };
+eval { $v .= pmver('Dist::Zilla::Plugin::Test::Compile','1.112820') };
 eval { $v .= pmver('Dist::Zilla::Role::PluginBundle::Easy','4.200004') };
 eval { $v .= pmver('File::Find','any version') };
 eval { $v .= pmver('File::Temp','any version') };
@@ -75,6 +76,8 @@ eval { $v .= pmver('Module::Build','0.3601') };
 eval { $v .= pmver('Moose','1.21') };
 eval { $v .= pmver('Pod::Weaver::PluginBundle::Apocalyptic','0.002') };
 eval { $v .= pmver('Test::More','0.88') };
+eval { $v .= pmver('strict','any version') };
+eval { $v .= pmver('warnings','any version') };
 
 
 

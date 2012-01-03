@@ -3,7 +3,7 @@ NAME
     dist!
 
 VERSION
-      This document describes v0.001 of Dist::Zilla::PluginBundle::Apocalyptic - released March 05, 2011 as part of Dist-Zilla-PluginBundle-Apocalyptic.
+      This document describes v0.002 of Dist::Zilla::PluginBundle::Apocalyptic - released January 02, 2012 as part of Dist-Zilla-PluginBundle-Apocalyptic.
 
 DESCRIPTION
     This plugin bundle attempts to automate as much as sanely possible the
@@ -46,7 +46,7 @@ DESCRIPTION
             skipfile = MANIFEST.SKIP
 
             ; -- Generate our tests
-            [CompileTests]                  ; Create a t/00-compile.t file that auto-compiles every module in the dist
+            [Test::Compile]                 ; Create a t/00-compile.t file that auto-compiles every module in the dist
             fake_home = 1                   ; fakes $ENV{HOME} just in case
             [ApocalypseTests]               ; Create a t/apocalypse.t file that runs Test::Apocalypse
             [ReportVersions::Tiny]          ; Report the versions of our prereqs
@@ -56,7 +56,6 @@ DESCRIPTION
             copyright = 1
             line = use strict; use warnings;
             [Authority]                     ; put the $AUTHORITY line in modules and the metadata
-            authority = cpan:APOCAL
             [PkgVersion]                    ; put the "our $VERSION = ...;" line in modules
             [PodWeaver]                     ; weave our POD and add useful boilerplate
             config_plugin = @Apocalyptic
@@ -86,13 +85,8 @@ DESCRIPTION
             license = http://dev.perl.org/licenses/
 
             ; -- generate meta files
-            [MetaNoIndex]                   ; tell PAUSE to not index those stuff ( if it exists )
-            directory = inc
-            directory = t
-            directory = xt
-            directory = examples
-            directory = share
-            directory = eg
+            [MetaNoIndex]                   ; tell PAUSE to not index those directories
+            directory = inc t xt examples share eg mylib
             [MetaProvides::Package]         ; get provides from package definitions in files
             meta_noindex = 1
             [License]                       ; create LICENSE file
@@ -132,6 +126,7 @@ DESCRIPTION
             tag_message = Tagged release-%v
             [Git::Push]                     ; automatically push to the "origin" defined in .git/config
             push_to = origin
+            [Clean]                         ; run dzil clean so we have no cruft :)
 
     However, this plugin bundle does A LOT of things, so you would need to
     read the config carefully to see if it does anything you don't want to
@@ -246,41 +241,78 @@ SUPPORT
     be of help to you. As always, in addition to those websites please use
     your favorite search engine to discover more resources.
 
+    *   MetaCPAN
+
+        A modern, open-source CPAN search engine, useful to view POD in HTML
+        format.
+
+        <http://metacpan.org/release/Dist-Zilla-PluginBundle-Apocalyptic>
+
     *   Search CPAN
+
+        The default CPAN search engine, useful to view POD in HTML format.
 
         <http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
     *   RT: CPAN's Bug Tracker
 
+        The RT ( Request Tracker ) website is the default bug/issue tracking
+        system for CPAN.
+
         <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Dist-Zilla-PluginBundle-Ap
         ocalyptic>
 
-    *   AnnoCPAN: Annotated CPAN documentation
+    *   AnnoCPAN
+
+        The AnnoCPAN is a website that allows community annotations of Perl
+        module documentation.
 
         <http://annocpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
     *   CPAN Ratings
 
+        The CPAN Ratings is a website that allows community ratings and
+        reviews of Perl modules.
+
         <http://cpanratings.perl.org/d/Dist-Zilla-PluginBundle-Apocalyptic>
 
     *   CPAN Forum
 
+        The CPAN Forum is a web forum for discussing Perl modules.
+
         <http://cpanforum.com/dist/Dist-Zilla-PluginBundle-Apocalyptic>
 
-    *   CPANTS Kwalitee
+    *   CPANTS
+
+        The CPANTS is a website that analyzes the Kwalitee ( code metrics )
+        of a distribution.
 
         <http://cpants.perl.org/dist/overview/Dist-Zilla-PluginBundle-Apocal
         yptic>
 
-    *   CPAN Testers Results
+    *   CPAN Testers
 
-        <http://cpantesters.org/distro/D/Dist-Zilla-PluginBundle-Apocalyptic
-        .html>
+        The CPAN Testers is a network of smokers who run automated tests on
+        uploaded CPAN distributions.
+
+        <http://www.cpantesters.org/distro/D/Dist-Zilla-PluginBundle-Apocaly
+        ptic>
 
     *   CPAN Testers Matrix
 
+        The CPAN Testers Matrix is a website that provides a visual overview
+        of the test results for a distribution on various Perls/platforms.
+
         <http://matrix.cpantesters.org/?dist=Dist-Zilla-PluginBundle-Apocaly
         ptic>
+
+    *   CPAN Testers Dependencies
+
+        The CPAN Testers Dependencies is a website that shows a chart of the
+        test results of all dependencies for a distribution.
+
+        <http://deps.cpantesters.org/?module=Dist::Zilla::PluginBundle::Apoc
+        alyptic>
 
   Email
     You can email the author of this module at "APOCAL at cpan.org" asking
@@ -330,33 +362,31 @@ AUTHOR
     Apocalypse <APOCAL@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2011 by Apocalypse.
+    This software is copyright (c) 2012 by Apocalypse.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
 
-    The full text of the license can be found in the LICENSE file included
+    The full text of the license can be found in the 'LICENSE' file included
     with this distribution.
 
 DISCLAIMER OF WARRANTY
-    BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-    FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-    PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
-    YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-    NECESSARY SERVICING, REPAIR, OR CORRECTION.
+    THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+    APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+    HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT
+    WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+    PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF
+    THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
+    THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
     IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-    REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE LIABLE
-    TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR
-    CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
-    SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-    RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-    FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-    SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
-    DAMAGES.
+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR
+    CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
+    INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
+    ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT
+    NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES
+    SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE
+    WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN
+    ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
