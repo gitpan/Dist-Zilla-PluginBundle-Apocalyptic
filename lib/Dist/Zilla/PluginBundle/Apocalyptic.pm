@@ -1,16 +1,15 @@
 #
 # This file is part of Dist-Zilla-PluginBundle-Apocalyptic
 #
-# This software is copyright (c) 2012 by Apocalypse.
+# This software is copyright (c) 2014 by Apocalypse.
 #
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
 use strict; use warnings;
 package Dist::Zilla::PluginBundle::Apocalyptic;
-{
-  $Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.003';
-}
+# git description: release-0.003-26-g1fce61f
+$Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.004';
 BEGIN {
   $Dist::Zilla::PluginBundle::Apocalyptic::AUTHORITY = 'cpan:APOCAL';
 }
@@ -20,7 +19,7 @@ BEGIN {
 use Moose 1.21;
 
 # The plugins we use ( excluding ones bundled in dzil )
-with 'Dist::Zilla::Role::PluginBundle::Easy' => { -version => '4.200004' };	# basically sets the dzil version
+with 'Dist::Zilla::Role::PluginBundle::Easy' => { -version => '5.011' };	# basically sets the dzil version
 use Pod::Weaver::PluginBundle::Apocalyptic 0.002;
 use Dist::Zilla::Plugin::Test::Compile 1.112820;
 use Dist::Zilla::Plugin::ApocalypseTests 0.01;
@@ -34,7 +33,6 @@ use Dist::Zilla::Plugin::Bugtracker 1.102670;
 use Dist::Zilla::Plugin::Homepage 1.101420;
 use Dist::Zilla::Plugin::Repository 0.16;
 use Dist::Zilla::Plugin::DualBuilders 1.001;
-use Dist::Zilla::Plugin::ReadmeFromPod 0.14;
 use Dist::Zilla::Plugin::InstallGuide 1.101461;
 use Dist::Zilla::Plugin::Signature 1.100930;
 use Dist::Zilla::Plugin::CheckChangesHasContent 0.003;
@@ -45,14 +43,33 @@ use Dist::Zilla::Plugin::MetaData::BuiltWith 0.01018204;
 use Dist::Zilla::Plugin::Clean 0.002;
 use Dist::Zilla::Plugin::LocaleMsgfmt 1.203;
 use Dist::Zilla::Plugin::CheckPrereqsIndexed 0.007;
+use Dist::Zilla::Plugin::DOAP 0.002;
+use Dist::Zilla::Plugin::Covenant 0.1.0;
+use Dist::Zilla::Plugin::CheckIssues 0.002;
+use Dist::Zilla::Plugin::SchwartzRatio 0.2.0;
+use Dist::Zilla::Plugin::CheckSelfDependency 0.007;
+use Dist::Zilla::Plugin::Git::Describe 0.003;
+use Dist::Zilla::Plugin::ContributorsFromGit 0.014;
+use Dist::Zilla::Plugin::ReportPhase; # TODO we wanted to specify 0.03 but it's weird version stanza blows up! RT#99769
+use Dist::Zilla::Plugin::ReadmeAnyFromPod 0.142470;
+use Dist::Zilla::Plugin::Git::CheckFor::CorrectBranch 0.011;
+use Dist::Zilla::Plugin::Git::Remote::Check 0.1.2;
+use Dist::Zilla::Plugin::PromptIfStale 0.028;
 
-# TODO fix this: http://changes.cpanhq.org/author/APOCAL
-
-# TODO follow up on those local patches:
-# Plugin::ChangelogFromGit - better HEAD tag name ( https://github.com/rcaputo/dzp-changelogfromgit/pull/1 )
+# Allow easier config manipulation
+with qw(
+	Dist::Zilla::Role::PluginBundle::Config::Slicer
+	Dist::Zilla::Role::PluginBundle::PluginRemover
+);
 
 sub configure {
 	my $self = shift;
+
+#	; -- Report the phases as a debugging aid
+	# TODO should this module automatically figure it out? if so, go make a pull req!
+	if ( join( ' ', @ARGV ) =~ /--verbose/i ) {
+		$self->add_plugins( [ 'ReportPhase' => 'ENTER' ] );
+	}
 
 #	; -- start off by bumping the version
 	$self->add_plugins(
@@ -62,9 +79,15 @@ sub configure {
 		}
 	],
 
+#	; -- import our files from the git root
+	[
+		'Git::GatherDir' => {
+			'exclude_filename' => 'README.pod',
+		},
+	],
+
 #	; -- start the basic dist skeleton
 	qw(
-		GatherDir
 		PruneCruft
 		AutoPrereqs
 	),
@@ -149,11 +172,14 @@ EOC
 	],
 	qw(
 		Authority
+		Git::Describe
 		PkgVersion
 	),
 	[
 		'PodWeaver' => {
-			'config_plugin' => '@Apocalyptic',
+			'config_plugin'		=> '@Apocalyptic',
+			'replacer'		=> 'replace_with_comment',
+			'post_code_replacer'	=> 'replace_with_nothing',
 		}
 	],
 	[
@@ -167,7 +193,7 @@ EOC
 		'NextRelease' => {
 			'time_zone'	=> 'UTC',
 			'filename'	=> 'Changes',
-			'format'	=> '%v%n%tReleased: %{yyyy-MM-dd HH:mm:ss VVVV}d',
+			'format'	=> '%v%t%{yyyy-MM-dd HH:mm:ss VVVV}d',
 		}
 	],
 	[
@@ -195,6 +221,7 @@ EOC
 		Bugtracker
 		Homepage
 		MetaConfig
+		ContributorsFromGit
 	),
 	[
 		'MetaData::BuiltWith' => {
@@ -247,9 +274,24 @@ EOC
 	qw(
 		MetaYAML
 		MetaJSON
-		ReadmeFromPod
 		InstallGuide
+		DOAP
+		Covenant
+		CPANFile
 	),
+	);
+
+#	; -- special stuff for README files
+#		we want README and README.pod but only include README in the built tarball and use README.pod in the root of the project!
+	$self->add_plugins(
+		'ReadmeAnyFromPod',
+	[
+		'ReadmeAnyFromPod', 'pod for github' => {
+			'type'	=> 'pod',
+			'location'	=> 'root',
+			'phase'	=> 'release',
+		},
+	],
 	[
 		'Signature' => {
 			'sign' => 'always',
@@ -268,11 +310,37 @@ EOC
 	[
 		'Git::Check' => {
 			'changelog'	=> 'Changes',
+			'allow_dirty'	=> [ 'README.pod', 'Changes' ], # TODO Changes shouldn't be in here but if I don't add it as allow_dirty it doesn't get committed!
 		}
+	],
+
+#	; -- sanity-check our git stuff
+#	TODO we need to fix Git::CheckFor::Fixups so it uses the version_regexp!
+	qw(
+		Git::CheckFor::CorrectBranch
+	) );
+	$self->add_plugins( [ 'Git::CheckFor::MergeConflicts' => {
+		'ignore' => 'CommitLog',
+	} ],
+	qw(
+		Git::Remote::Check
+	),
+
+#	; -- more sanity tests before confirming
+	[
+		'PromptIfStale' => {
+			'check_authordeps'	=> 1,
+			'check_all_plugins'	=> 1,
+			'check_all_prereqs'	=> 1,
+			'phase'			=> 'release',
+			'fatal'			=> 1,
+		},
 	],
 	qw(
 		TestRelease
 		CheckPrereqsIndexed
+		CheckSelfDependency
+		CheckIssues
 		ConfirmRelease
 	),
 
@@ -293,6 +361,7 @@ EOC
 			'commit_msg'	=> 'New CPAN release of %N - v%v%n%n%c',
 			'time_zone'	=> 'UTC',
 			'add_files_in'	=> 'releases',
+			'allow_dirty'	=> [ 'README.pod', 'Changes' ], # TODO Changes shouldn't be in here but if I don't add it as allow_dirty it doesn't get committed!
 		}
 	],
 	[
@@ -309,22 +378,27 @@ EOC
 	],
 	qw(
 		Clean
+		SchwartzRatio
 	),
 	);
+
+	if ( join( ' ', @ARGV ) =~ /--verbose/i ) {
+		$self->add_plugins( [ 'ReportPhase' => 'LEAVE' ] );
+	}
 }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =for :stopwords Apocalypse cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee
 diff irc mailto metadata placeholders metacpan
-
-=encoding utf-8
 
 =for Pod::Coverage configure
 
@@ -334,7 +408,7 @@ Dist::Zilla::PluginBundle::Apocalyptic - Let the apocalypse build your dist!
 
 =head1 VERSION
 
-  This document describes v0.003 of Dist::Zilla::PluginBundle::Apocalyptic - released January 03, 2012 as part of Dist-Zilla-PluginBundle-Apocalyptic.
+  This document describes v0.004 of Dist::Zilla::PluginBundle::Apocalyptic - released October 25, 2014 as part of Dist-Zilla-PluginBundle-Apocalyptic.
 
 =head1 DESCRIPTION
 
@@ -366,12 +440,15 @@ This is equivalent to setting this in your dist.ini:
 
 	# Skipping the usual name/author/license/copyright stuff
 
+	[ReportPhase / ENTER]	; reports the dzil build phases
+
 	; -- start off by bumping the version
 	[Git::NextVersion]		; find the last tag, and bump to next version via Version::Next
 	version_regexp = ^release-(.+)$
 
 	; -- start the basic dist skeleton
-	[GatherDir]			; we start with everything in the dist dir
+	[Git::GatherDir]			; we start with everything in the root dir, ignoring our auto-generated README.pod
+	exclude_filename = README.pod
 	[PruneCruft]			; automatically prune cruft defined by RJBS :)
 	[AutoPrereqs]			; automatically find our prereqs
 	[GenerateFile / MANIFEST.SKIP]	; make our default MANIFEST.SKIP
@@ -389,9 +466,12 @@ This is equivalent to setting this in your dist.ini:
 	copyright = 1
 	line = use strict; use warnings;
 	[Authority]			; put the $AUTHORITY line in modules and the metadata
+	[Git::Describe]		 ; make a note of the git commit description used in building this release
 	[PkgVersion]			; put the "our $VERSION = ...;" line in modules
 	[PodWeaver]			; weave our POD and add useful boilerplate
 	config_plugin = @Apocalyptic
+	replacer = replace_with_comment
+	post_code_replacer = replace_with_nothing
 	[LocaleMsgfmt]			; compile .po files to .mo files in share/locale
 	locale = share/locale
 
@@ -410,9 +490,10 @@ This is equivalent to setting this in your dist.ini:
 	[ShareDir]			; automatically install File::ShareDir files from share/ ( if it exists )
 	dir = share
 	[MinimumPerl]			; automatically find the minimum perl version required and add it to prereqs
-	[Bugtracker]			; set bugtracker to http://rt.cpan.org/Public/Dist/Display.html?Name=$dist
-	[Homepage]			; set homepage to http://search.cpan.org/dist/$dist/
+	[Bugtracker]			; set bugtracker to http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-PluginBundle-Apocalyptic
+	[Homepage]			; set homepage to http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic/
 	[MetaConfig]			; dump dzil config into metadata
+	[ContributorsFromGit]   ; generate our CONTRIBUTORS section by looking at the git history
 	[MetaData::BuiltWith]		; dump entire perl modules we used to build into metadata
 	[Repository]			; set git repository path by looking at git configs
 	git_remote = origin
@@ -431,8 +512,12 @@ This is equivalent to setting this in your dist.ini:
 	prefer = build
 	[MetaYAML]			; create META.yml file
 	[MetaJSON]			; create META.json file
-	[ReadmeFromPod]			; create README file
+	[ReadmeAnyFromPod]			; create README file
+	[ReadmeAnyFromPod / PodRoot]	; create README.pod file in repository root ( useful for github! )
 	[InstallGuide]			; create INSTALL file
+	[DOAP]				; create doap.xml describing the module
+	[Covenant]			; create AUTHOR_PLEDGE describing how PAUSE admins can grant co-maint
+	[CPANFile]			; create a 'cpanfile' file describing prereqs
 	[Signature]			; create SIGNATURE file when we are releasing ( annoying to enter password during test builds... )
 	sign = archive
 	[Manifest]			; finally, create the MANIFEST file
@@ -442,8 +527,18 @@ This is equivalent to setting this in your dist.ini:
 	changelog = Changes
 	[Git::Check]			; check working path for any uncommitted stuff ( exempt Changes because it will be committed after release )
 	changelog = Changes
+	allow_dirty = README.pod
+	[PromptIfStale]		; check our installed dependencies to make sure that we don't have stale modules and prevent release if so
+	check_authordeps = 1
+	check_all_plugins = 1
+	check_all_prereqs = 1
+	phase = release
+	fatal = 1
 	[TestRelease]                   ; make sure that we won't release a FAIL distro :)
+	[@Git::CheckFor]		; prevent common git errors ( wrong branch, forgotten squash/fixups! )
 	[CheckPrereqsIndexed]		; make sure that our prereqs actually exist on CPAN
+	[CheckSelfDependency]           ; make sure we didn't create a recursive dependency situation!
+	[CheckIssues]		; Looks on RT and github for issues that we can review
 	[ConfirmRelease]		; double-check that we ACTUALLY want a release, ha!
 
 	; -- release
@@ -457,12 +552,18 @@ This is equivalent to setting this in your dist.ini:
 	commit_msg = New CPAN release of %N - v%v%n%n%c
 	time_zone = UTC
 	add_files_in = releases		; add our release tarballs to the repo
+	allow_dirty = README.pod
 	[Git::Tag]			; tag our new release
 	tag_format = release-%v
 	tag_message = Tagged release-%v
 	[Git::Push]			; automatically push to the "origin" defined in .git/config
 	push_to = origin
 	[Clean]				; run dzil clean so we have no cruft :)
+	[SchwartzRatio]		; informs us of old distributions lingering on CPAN
+
+	[ReportPhase / LEAVE]	; reports the dzil build phases
+
+=head1 Setting options
 
 However, this plugin bundle does A LOT of things, so you would need to read the config carefully to see if it does
 anything you don't want to do. You can override the options simply by removing the offending plugin from the bundle
@@ -484,121 +585,17 @@ or the desired plugin configuration manually.
 	[Git::Push]
 	push_to = gitorious
 
-=head2 dumpphases
+=head2 Newer method to manipulate this bundle
 
-Here is an output of a distribution using Dist::Zilla and only this bundle:
+This PluginBundle now supports L<Dist::Zilla::PluginBundle::ConfigSlicer>, so you can pass in options to the plugins used like this:
 
-	apoc@apoc-x300:~/mygit/perl-dist-zilla-pluginbundle-apocalyptic$ dzil dumpphases
+	[@Apocalyptic]
+	Git::Push.push_to = gitorious
 
-	Phase: Version
-	 - description: Provide a version for the distribution
-	 - role: -VersionProvider
-	 * @Apocalyptic/Git::NextVersion => Dist::Zilla::Plugin::Git::NextVersion
+This PluginBundle also supports L<Dist::Zilla::Role::PluginBundle::PluginRemover>, so dropping a plugin is as easy as this:
 
-	Phase: MetaData
-	 - description: Specify MetaData for the distribution
-	 - role: -MetaProvider
-	 * @Apocalyptic/Authority => Dist::Zilla::Plugin::Authority
-	 * @Apocalyptic/Bugtracker => Dist::Zilla::Plugin::Bugtracker
-	 * @Apocalyptic/Homepage => Dist::Zilla::Plugin::Homepage
-	 * @Apocalyptic/MetaConfig => Dist::Zilla::Plugin::MetaConfig
-	 * @Apocalyptic/MetaData::BuiltWith => Dist::Zilla::Plugin::MetaData::BuiltWith
-	 * @Apocalyptic/Repository => Dist::Zilla::Plugin::Repository
-	 * @Apocalyptic/MetaResources => Dist::Zilla::Plugin::MetaResources
-	 * @Apocalyptic/MetaNoIndex => Dist::Zilla::Plugin::MetaNoIndex
-	 * @Apocalyptic/MetaProvides::Package => Dist::Zilla::Plugin::MetaProvides::Package
-
-	Phase: Before Build
-	 - role: -BeforeBuild
-	 * @Apocalyptic/LocaleMsgfmt => Dist::Zilla::Plugin::LocaleMsgfmt
-
-	Phase: Gather Files
-	 - role: -FileGatherer
-	 * @Apocalyptic/GatherDir => Dist::Zilla::Plugin::GatherDir
-	 * @Apocalyptic/MANIFEST.SKIP => Dist::Zilla::Plugin::GenerateFile
-	 * @Apocalyptic/Test::Compile => Dist::Zilla::Plugin::Test::Compile
-	 * @Apocalyptic/ApocalypseTests => Dist::Zilla::Plugin::ApocalypseTests
-	 * @Apocalyptic/ReportVersions::Tiny => Dist::Zilla::Plugin::ReportVersions::Tiny
-	 * @Apocalyptic/ChangelogFromGit => Dist::Zilla::Plugin::ChangelogFromGit
-	 * @Apocalyptic/License => Dist::Zilla::Plugin::License
-	 * @Apocalyptic/MetaYAML => Dist::Zilla::Plugin::MetaYAML
-	 * @Apocalyptic/MetaJSON => Dist::Zilla::Plugin::MetaJSON
-	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
-	 * @Apocalyptic/Manifest => Dist::Zilla::Plugin::Manifest
-
-	Phase: Prune Files
-	 - role: -FilePruner
-	 * @Apocalyptic/PruneCruft => Dist::Zilla::Plugin::PruneCruft
-	 * @Apocalyptic/ManifestSkip => Dist::Zilla::Plugin::ManifestSkip
-	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
-
-	Phase: Munge Files
-	 - role: -FileMunger
-	 * @Apocalyptic/ApocalypseTests => Dist::Zilla::Plugin::ApocalypseTests
-	 * @Apocalyptic/Prepender => Dist::Zilla::Plugin::Prepender
-	 * @Apocalyptic/Authority => Dist::Zilla::Plugin::Authority
-	 * @Apocalyptic/PkgVersion => Dist::Zilla::Plugin::PkgVersion
-	 * @Apocalyptic/PodWeaver => Dist::Zilla::Plugin::PodWeaver
-	 * @Apocalyptic/NextRelease => Dist::Zilla::Plugin::NextRelease
-
-	Phase: Register Preqreqs
-	 - role: -PrereqSource
-	 * @Apocalyptic/AutoPrereqs => Dist::Zilla::Plugin::AutoPrereqs
-	 * @Apocalyptic/MinimumPerl => Dist::Zilla::Plugin::MinimumPerl
-	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
-	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
-	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
-
-	Phase: Install Tool
-	 - role: -InstallTool
-	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
-	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
-	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
-	 * @Apocalyptic/ReadmeFromPod => Dist::Zilla::Plugin::ReadmeFromPod
-	 * @Apocalyptic/InstallGuide => Dist::Zilla::Plugin::InstallGuide
-
-	Phase: After Build
-	 - role: -AfterBuild
-	 * @Apocalyptic/DualBuilders => Dist::Zilla::Plugin::DualBuilders
-	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
-
-	Phase: Before Archive
-	 - role: -BeforeArchive
-	 * @Apocalyptic/Signature => Dist::Zilla::Plugin::Signature
-
-	Phase: Releaser
-	 - role: -Releaser
-	 * @Apocalyptic/UploadToCPAN => Dist::Zilla::Plugin::UploadToCPAN
-	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
-
-	Phase: Before Release
-	 - role: -BeforeRelease
-	 * @Apocalyptic/CheckChangesHasContent => Dist::Zilla::Plugin::CheckChangesHasContent
-	 * @Apocalyptic/Git::Check => Dist::Zilla::Plugin::Git::Check
-	 * @Apocalyptic/TestRelease => Dist::Zilla::Plugin::TestRelease
-	 * @Apocalyptic/CheckPrereqsIndexed => Dist::Zilla::Plugin::CheckPrereqsIndexed
-	 * @Apocalyptic/ConfirmRelease => Dist::Zilla::Plugin::ConfirmRelease
-	 * @Apocalyptic/UploadToCPAN => Dist::Zilla::Plugin::UploadToCPAN
-	 * @Apocalyptic/ArchiveRelease => Dist::Zilla::Plugin::ArchiveRelease
-	 * @Apocalyptic/Git::Tag => Dist::Zilla::Plugin::Git::Tag
-
-	Phase: After Release
-	 - role: -AfterRelease
-	 * @Apocalyptic/NextRelease => Dist::Zilla::Plugin::NextRelease
-	 * @Apocalyptic/Git::Commit => Dist::Zilla::Plugin::Git::Commit
-	 * @Apocalyptic/Git::Tag => Dist::Zilla::Plugin::Git::Tag
-	 * @Apocalyptic/Git::Push => Dist::Zilla::Plugin::Git::Push
-	 * @Apocalyptic/Clean => Dist::Zilla::Plugin::Clean
-
-	Phase: Test Runner
-	 - role: -TestRunner
-	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
-	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
-
-	Phase: Build Runner
-	 - role: -BuildRunner
-	 * @Apocalyptic/MakeMaker => Dist::Zilla::Plugin::MakeMaker
-	 * @Apocalyptic/ModuleBuild => Dist::Zilla::Plugin::ModuleBuild
+	[@Apocalyptic]
+	-remove = ArchiveRelease
 
 =head1 Future Plans
 
@@ -653,8 +650,6 @@ create a Changes file with the boilerplate text in it
 =head3 github integration
 
 automatically create github repo + set description/homepage via L<Dist::Zilla::Plugin::UpdateGitHub> and L<App::GitHub::create> or L<App::GitHub>
-
-GitHub needs a README - can we extract it and upload it on release? ( the current L<Dist::Zilla::Plugin::Readme> doesn't extract the entire POD... )
 
 =head3 gitorious integration
 
@@ -831,7 +826,7 @@ The code is open to the world, and available for you to hack on. Please feel fre
 with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
 from your repository :)
 
-L<http://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic>
+L<https://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic>
 
   git clone git://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic.git
 
@@ -839,15 +834,21 @@ L<http://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic>
 
 Apocalypse <APOCAL@cpan.org>
 
+=head2 CONTRIBUTOR
+
+=for stopwords Apocalypse
+
+Apocalypse <perl@0ne.us>
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Apocalypse.
+This software is copyright (c) 2014 by Apocalypse.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 The full text of the license can be found in the
-'LICENSE' file included with this distribution.
+F<LICENSE> file included with this distribution.
 
 =head1 DISCLAIMER OF WARRANTY
 
@@ -871,4 +872,3 @@ EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
 
 =cut
-

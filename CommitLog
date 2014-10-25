@@ -1,295 +1,170 @@
 ==================================================
-Changes from 2011-01-03 00:00:00 +0000 to present.
+Changes from 2013-10-25 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.003 at 2012-01-03 05:42:23 +0000
+version 0.004 at 2014-10-25 20:25:42 +0000
 ------------------------------------------
 
-  Change: fc51d231d7624d9895664d4e3f0afbb5cf8906df
+  Change: 1fce61fb808f8b6c2a8de923c6142df060d3b5dd
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-03 00:41:04 +0000
+  Date : 2014-10-25 13:08:31 +0000
 
-    add use of CheckPrereqsIndexed 
+    Add Changes to allow_dirty to force @Git to commit it... 
 
-  Change: 1e950fc8a014c6a907abad47d42895806da7789c
+  Change: de4d7c689bc5ab060d8aa9cedcc679585b7c3d31
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-03 00:31:42 +0000
+  Date : 2014-10-24 22:27:15 +0000
 
-    use LocaleMsgfmt 
+    rename EXIT to LEAVE for clarity 
 
-  Change: eda17e6999e0e512e31c5a70ac2978f9367b4613
+  Change: 57ea801ecbe8bb813294276ca84d670e5ce6b24c
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-03 00:21:17 +0000
+  Date : 2014-10-24 21:59:55 +0000
 
-    add output of dzil dumpphases 
+    fix conflicting names for ReadmeAny 
 
-------------------------------------------
-version 0.002 at 2012-01-03 01:35:33 +0000
-------------------------------------------
-
-  Change: 249e9d74a1e970bf600233c8768be4b18e6ecb3c
+  Change: 30c016d24dbb1180c66324911158a4f3ccdfafc4
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-02 20:35:33 +0000
+  Date : 2014-10-24 21:41:56 +0000
 
-    New CPAN release of Dist-Zilla-PluginBundle-Apocalyptic - v0.002
+    use PromptIfStale, ETHER++ 
 
-    Released: 2012-01-03 01:34:43 UTC
-
-    Use Dist::Zilla::Plugin::Clean
-
-    Replace Dist::Zilla::Plugin::CompileTests with DZP::Test::Compile as
-    it was deprecated 
-
-  Change: a85c5d598f90b4c9b7125cd613eddd07afdef78f
+  Change: 620ebbdc716ecf6858818560a95dbc022af14086
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-02 20:32:39 +0000
+  Date : 2014-10-24 21:22:17 +0000
 
-    tweak the POD 
+    fix ReportPhase weirdness and load it only on verbose 
 
-  Change: a49839122d1258ab14dead3765291711b7039d77
+  Change: a27986afeab1d359d40e92100dda24f380961e30
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-02 20:05:04 +0000
+  Date : 2014-10-24 19:38:21 +0000
 
-    tweak missing rename of CompileTests to Test::Compile in POD 
+    tweak http links to pass PodNo404s 
 
-  Change: 31c11d8a40a8c0a9bb8647ee08072d4c50f1a0e6
+  Change: a3f8fc6bd9766ebcb74ac4c85e12cf39f6e1eefc
   Author: Apocalypse <APOCAL@cpan.org>
-  Date : 2012-01-02 19:56:45 +0000
+  Date : 2014-10-24 17:57:03 +0000
 
-    use dzp::Test::Compile instead f deprecated CompileTests 
+    add Git::Remote::Check and change README.pod to be generated during
+    release phase, thanks ETHER 
 
-  Change: 35628305e679ebd4983507fa550d158e4060efdb
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-04-29 11:19:16 +0000
+  Change: 4febddf2dc958669d38f633709eb1faf94798b2e
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-24 00:11:56 +0000
 
-    add dzp::Clean 
+    preserve original line numbers on munging 
 
-  Change: 624b7ef2298d44000d6c13867fb79380306a245d
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-04-02 12:21:50 +0000
+  Change: 9faf0ece54d38345151e6c9b1677c63fb3a9297b
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 23:56:35 +0000
 
-    add changes.cpanhq.org todo 
+    use Git::GatherDir so we can ignore README.pod 
 
-------------------------------------------
-version 0.001 at 2011-03-06 02:22:11 +0000
-------------------------------------------
+  Change: fe361a4bf1e0d80971a4415c0c0f5a3dfc6222b1
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 23:48:40 +0000
 
-  Change: 8cae8123bd99be3a7600f8708e1d2aa90016dfc2
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-03-05 19:22:11 +0000
+    use ConfigSlicer and PluginRemover for easier management 
 
-    New CPAN release of Dist-Zilla-PluginBundle-Apocalyptic - v0.001
+  Change: 75f253212f8fb2d6f91f6133a43073e6f47bc663
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 23:26:07 +0000
 
-    Released: 2011-03-06 02:21:36 UTC
+    dont use Git::CheckFor::Fixups yet as we need it to use
+    version_regexp 
 
-    initial release 
+  Change: 3e2c7220644b8e89bbbeaee8839e7a51c2696cab
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 22:59:28 +0000
 
-  Change: 6ebdc3d2f1052a8cb4a9c500b0b77c6afad55f77
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-03-05 19:11:55 +0000
+    use the @Git::CheckFor bundle 
 
-    prereq on our podweaver bundle 0.002 
+  Change: a9d2cd65dd6ab2fa2d387efd9963d14b68f8ed76
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 21:42:04 +0000
 
-  Change: 3990fb4e329a60f0278689d1e9e8c36fc6739a26
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-03-05 17:42:41 +0000
+    fix pod for dumpphases 
 
-    use new SeeAlso method 
+  Change: 58aab49282ec2100cca417e13760cde7623429dd
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 21:35:23 +0000
 
-  Change: 330d1848021b2e94dd955eba0763953ad979ca12
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-03-04 16:50:34 +0000
+    generate README.pod in root 
 
-    reinstate Test::Apocalypse usage 
+  Change: cd9dc1548e557a29a68ba711e390e4967ccdc6c1
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 21:08:43 +0000
 
-  Change: 629c24d53b3fe6086d63444ef3dba3e7c7f1feac
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-02-21 11:27:36 +0000
+    tweak changes 
 
-    more TODO tweaks 
+  Change: 13b1efa9f7241bd5b0cd838f84ee1d1f9e401fd7
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 20:58:35 +0000
 
-  Change: 6deae2a7140b6655bd8306e73c3b98df8d6a6d84
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-02-21 00:03:21 +0000
+    tweak Changes format 
 
-    add new dzp::git ver 
+  Change: fe4f40e1a4d9c69aba1711a7f0b23d61ce6e2b6a
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 20:52:48 +0000
 
-  Change: 3242d3781a418ededf738c2138c3887cd51dcfda
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-02-12 14:45:36 +0000
+    add DZP::ReportPhase, thanks kentnl for tracking down weirdness 
 
-    add mylib to metanoindex 
+  Change: 22edbe12e0bf2fac937340ddaafdf2003df9b183
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 18:12:55 +0000
 
-  Change: 6f157f26bf499627ba9fbe3c2b94a412f3a4a874
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-02-11 17:58:48 +0000
+    fix docs 
 
-    disable ApocalypseTests for now and remove warnings FATAL, it was
-    idiotic 
+  Change: 1ac1330e9243e5c502e1bb005c2e2d9b07d8344a
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:53:22 +0000
 
-  Change: b5f0155ba570b485a7bf14cdf3523350232fdd78
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2011-02-03 21:20:32 +0000
+    add DZP::CPANFile to generate it 
 
-    use warnings FATAL 
+  Change: 1e1aca246a5ac69c20b0676a6f7b1d951e21b49a
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:50:42 +0000
 
-  Change: a2b00f9ed8af037a004ef1c1abf6017c64cdcf6a
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-16 12:37:10 +0000
+    add DZP::ContributorsFromGit 
 
-    add more ideas 
+  Change: c82351e7ef4d7e02186a981335c45cd3a15fe449
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:47:28 +0000
 
-  Change: fde5697a44f05067c519f5f4a0bf0350a1f4069a
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-16 12:28:48 +0000
+    use DZP::Git::Describe to insert a short git description in the main
+    module 
 
-    add dzil build dir to ignore 
+  Change: 52d6e86b875fddc4571e16f634ed00a38f7b5196
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:45:46 +0000
 
-  Change: bfc199c8c4bf078af241fcb1329e1357a18e6c63
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-15 12:00:26 +0000
+    add DZP::CheckSelfDependency for sanity 
 
-    always use UploadToCPAN 
+  Change: c38b293a0d46d57a455e2099eff62ca969b7ba71
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:10:12 +0000
 
-  Change: 42ef0d4973b8bdb401358b3b688bc329fb9d500e
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-13 15:26:21 +0000
+    add DZP::SchwartzRatio to inform us of old releases on CPAN 
 
-    updated Git usage, add time_zone and add_files_in usage 
+  Change: 47104d35bc2989bf1765b855ff90844081428c3e
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 17:07:05 +0000
 
-  Change: 3d1b47bd37a219c7bfc40025de70417cd619cd4d
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-08 00:07:01 +0000
+    add DZP::CheckIssues so we can review RT/github issues before release 
 
-    reformat and add some TODOs 
+  Change: fc048fd55defa38faedef91d9c4cbe1c0eb81d85
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 15:52:19 +0000
 
-  Change: 02938dac35d5d689fce67b07d237cc0d0317ab66
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-06 16:34:14 +0000
+    use the DZP:Covenant module to generate an AUTHOR_PLEDGE file 
 
-    tweak the POD and update MinimumPerl ver 
+  Change: 5a9032501be411c71f14a478edd69b6eb7a5cfde
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-23 15:20:41 +0000
 
-  Change: 72d16a917a60c6ae25850c8924d37f326173fbba
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-06 12:40:10 +0000
+    use DZP::DOAP to auto-create doap.xml 
 
-    remove args to Authority, it now auto-does everything :) 
-
-  Change: 71f6e2924cfc4edf542e098026e4f299259e8cb1
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-05 23:28:43 +0000
-
-    update Authority plugin for new release 
-
-  Change: 700c1f9003215456a8d15e39eeca1c9f6c268266
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-04 22:09:07 +0000
-
-    update versions and more notes 
-
-  Change: 3fe9c777e4ae2b4905d27c88f8ec1d6d5980de5d
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-12-04 17:08:29 +0000
-
-    minor tweaks and more notes 
-
-  Change: 15fc00f3ac1cd50675986eccf4b7e5e89c0ad283
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-06-30 15:07:35 +0000
-
-    move podweaver bundle to separate dist 
-
-  Change: 97658823ea1452a484088c7cf84e00126175e863
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-31 12:21:08 +0000
-
-    bump ReportVersions::Tiny prereq 
-
-  Change: 00adaf7458732ada88079e44a262c16770d15469
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-30 11:21:40 +0000
-
-    add ReportVersions::Tiny 
-
-  Change: c03db2bee27bcdebf8dfe288b4c63b9ff9b377b5
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-30 11:07:59 +0000
-
-    fix gitignore 
-
-  Change: 4281cf68ae0f39b06c02ab4013b79c1bea008a15
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-29 12:10:45 +0000
-
-    fix some bugs and make APOCAL default pauseid 
-
-  Change: 784791ffd5449ceff56c95cbc5cbb0fdb3b0ea83
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-16 10:06:12 +0000
-
-    use proper attrs 
-
-  Change: a861be22c9bb50825daa6cb75fe6d2befb030615
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-13 20:43:14 +0000
-
-    more cleanup of POD, and flesh out the rest of the docs 
-
-  Change: c6aaa8958669558ec307b15dabd9e8a8ee6180ea
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-13 16:38:41 +0000
-
-    tweak configs more, hah 
-
-  Change: 70f6494d1a10e47c5ac2ebb39d715b66541f13c7
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-13 00:10:59 +0000
-
-    add CheckChangesHasContent 
-
-  Change: 0448f5ada74881dda12a43cb322f9efb30a96589
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-12 00:44:45 +0000
-
-    more work 
-
-  Change: 3ee78eb30ca50af0eda7a01e3dba84c5500cdb58
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-06 17:12:02 +0000
-
-    start of work on Image plugin 
-
-  Change: 0905a384f1ea3d734851c591c3f18ff4a7c00e0f
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-06 15:56:29 +0000
-
-    add Authority plugin and more work on podweaver stuff 
-
-  Change: 171d985e9bc54cbe59d4a6efe58968f30cee89b5
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-06 09:30:41 +0000
-
-    more additions 
-
-  Change: d26f9be292e6009a822aa7255505e2f6e8b2ddd6
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-04 19:17:28 +0000
-
-    more tweaks to the config 
-
-  Change: 6ae1a7adba8f4c83a77a6db7dca42b850f3f2600
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-02 21:36:38 +0000
-
-    first stab at things 
-
-  Change: d823e49d963ea8d195628e208a2dd6a7746ac18c
-  Author: Apocalypse <perl@0ne.us>
-  Date : 2010-05-02 15:05:47 +0000
-
-    first commit 
-
-================
-End of releases.
-================
+================================================
+Plus 3 releases after 2013-10-25 00:00:00 +0000.
+================================================
