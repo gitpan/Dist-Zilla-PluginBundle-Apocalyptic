@@ -1,10 +1,51 @@
 ==================================================
-Changes from 2013-10-25 00:00:00 +0000 to present.
+Changes from 2013-10-28 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.004 at 2014-10-25 20:25:42 +0000
+version 0.005 at 2014-10-28 18:09:26 +0000
 ------------------------------------------
+
+  Change: 7f6133e5a3cf725f8933c01b01f16aab01a0fef7
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-28 10:47:48 +0000
+
+    use the more lightweight Git::Contributors plugin 
+
+  Change: 49cabc5cc91038b1fd002bdd8f8216b5ea23684b
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-28 10:43:34 +0000
+
+    drop DualBuilders 
+
+  Change: d61babf8c949c6ae2e6fc9b9b9bd3bf983aa63c3
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-25 13:41:49 +0000
+
+    add mailmap so we fix CONTRIBUTORS hah 
+
+------------------------------------------
+version 0.004 at 2014-10-25 20:28:49 +0000
+------------------------------------------
+
+  Change: 1ce5a6fa1523f4af1d964ee8396be926429e196b
+  Author: Apocalypse <APOCAL@cpan.org>
+  Date : 2014-10-25 13:28:49 +0000
+
+    New CPAN release of Dist-Zilla-PluginBundle-Apocalyptic - v0.004
+
+    Added a bunch of plugins! wheee :)
+
+    Tweaked the Changes format to be CPAN::Changes::Spec compatible!
+
+    Changed to DZP::ReadmeAnyFromPod instead of DZP::ReadmeFromPod as we
+    now generate a README.pod in the root for github, thanks RT#85019
+
+    Enabled ConfigSlicer and PluginRemover for easier bundle
+    manipulation, thanks DAGOLDEN
+
+    Enabled the Pod::Weaver options to preserve original source code line
+    numbering on munging, thanks DAGOLDEN 
 
   Change: 1fce61fb808f8b6c2a8de923c6142df060d3b5dd
   Author: Apocalypse <APOCAL@cpan.org>
@@ -166,5 +207,5 @@ version 0.004 at 2014-10-25 20:25:42 +0000
     use DZP::DOAP to auto-create doap.xml 
 
 ================================================
-Plus 3 releases after 2013-10-25 00:00:00 +0000.
+Plus 3 releases after 2013-10-28 00:00:00 +0000.
 ================================================

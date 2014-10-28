@@ -8,20 +8,21 @@ requires "Dist::Zilla::Plugin::CheckIssues" => "0.002";
 requires "Dist::Zilla::Plugin::CheckPrereqsIndexed" => "0.007";
 requires "Dist::Zilla::Plugin::CheckSelfDependency" => "0.007";
 requires "Dist::Zilla::Plugin::Clean" => "0.002";
-requires "Dist::Zilla::Plugin::ContributorsFromGit" => "0.014";
 requires "Dist::Zilla::Plugin::Covenant" => "v0.1.0";
 requires "Dist::Zilla::Plugin::DOAP" => "0.002";
-requires "Dist::Zilla::Plugin::DualBuilders" => "1.001";
 requires "Dist::Zilla::Plugin::Git" => "1.110500";
 requires "Dist::Zilla::Plugin::Git::CheckFor::CorrectBranch" => "0.011";
+requires "Dist::Zilla::Plugin::Git::Contributors" => "0.008";
 requires "Dist::Zilla::Plugin::Git::Describe" => "0.003";
 requires "Dist::Zilla::Plugin::Git::Remote::Check" => "v0.1.2";
 requires "Dist::Zilla::Plugin::Homepage" => "1.101420";
 requires "Dist::Zilla::Plugin::InstallGuide" => "1.101461";
 requires "Dist::Zilla::Plugin::LocaleMsgfmt" => "1.203";
+requires "Dist::Zilla::Plugin::MakeMaker::Fallback" => "0.013";
 requires "Dist::Zilla::Plugin::MetaData::BuiltWith" => "0.01018204";
 requires "Dist::Zilla::Plugin::MetaProvides::Package" => "1.12044908";
 requires "Dist::Zilla::Plugin::MinimumPerl" => "1.001";
+requires "Dist::Zilla::Plugin::ModuleBuildTiny" => "0.007";
 requires "Dist::Zilla::Plugin::PodWeaver" => "3.101641";
 requires "Dist::Zilla::Plugin::Prepender" => "1.101590";
 requires "Dist::Zilla::Plugin::PromptIfStale" => "0.028";
@@ -41,10 +42,6 @@ requires "perl" => "5.006";
 requires "strict" => "0";
 requires "warnings" => "0";
 
-on 'build' => sub {
-  requires "Module::Build" => "0.28";
-};
-
 on 'test' => sub {
   requires "File::Spec" => "0";
   requires "File::Temp" => "0";
@@ -55,7 +52,9 @@ on 'test' => sub {
 };
 
 on 'configure' => sub {
-  requires "Module::Build" => "0.28";
+  requires "ExtUtils::MakeMaker" => "0";
+  requires "Module::Build::Tiny" => "0.039";
+  requires "perl" => "5.006";
 };
 
 on 'develop' => sub {

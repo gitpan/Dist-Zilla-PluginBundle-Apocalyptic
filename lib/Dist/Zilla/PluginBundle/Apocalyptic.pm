@@ -8,11 +8,9 @@
 #
 use strict; use warnings;
 package Dist::Zilla::PluginBundle::Apocalyptic;
-# git description: release-0.003-26-g1fce61f
-$Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.004';
-BEGIN {
-  $Dist::Zilla::PluginBundle::Apocalyptic::AUTHORITY = 'cpan:APOCAL';
-}
+# git description: release-0.004-3-g7f6133e
+$Dist::Zilla::PluginBundle::Apocalyptic::VERSION = '0.005';
+our $AUTHORITY = 'cpan:APOCAL';
 
 # ABSTRACT: Let the apocalypse build your dist!
 
@@ -32,7 +30,6 @@ use Dist::Zilla::Plugin::MetaProvides::Package 1.12044908;
 use Dist::Zilla::Plugin::Bugtracker 1.102670;
 use Dist::Zilla::Plugin::Homepage 1.101420;
 use Dist::Zilla::Plugin::Repository 0.16;
-use Dist::Zilla::Plugin::DualBuilders 1.001;
 use Dist::Zilla::Plugin::InstallGuide 1.101461;
 use Dist::Zilla::Plugin::Signature 1.100930;
 use Dist::Zilla::Plugin::CheckChangesHasContent 0.003;
@@ -49,12 +46,14 @@ use Dist::Zilla::Plugin::CheckIssues 0.002;
 use Dist::Zilla::Plugin::SchwartzRatio 0.2.0;
 use Dist::Zilla::Plugin::CheckSelfDependency 0.007;
 use Dist::Zilla::Plugin::Git::Describe 0.003;
-use Dist::Zilla::Plugin::ContributorsFromGit 0.014;
 use Dist::Zilla::Plugin::ReportPhase; # TODO we wanted to specify 0.03 but it's weird version stanza blows up! RT#99769
 use Dist::Zilla::Plugin::ReadmeAnyFromPod 0.142470;
 use Dist::Zilla::Plugin::Git::CheckFor::CorrectBranch 0.011;
 use Dist::Zilla::Plugin::Git::Remote::Check 0.1.2;
 use Dist::Zilla::Plugin::PromptIfStale 0.028;
+use Dist::Zilla::Plugin::ModuleBuildTiny 0.007;
+use Dist::Zilla::Plugin::MakeMaker::Fallback 0.013;
+use Dist::Zilla::Plugin::Git::Contributors 0.008;
 
 # Allow easier config manipulation
 with qw(
@@ -221,7 +220,7 @@ EOC
 		Bugtracker
 		Homepage
 		MetaConfig
-		ContributorsFromGit
+		Git::Contributors
 	),
 	[
 		'MetaData::BuiltWith' => {
@@ -263,14 +262,9 @@ EOC
 	],
 	qw(
 		License
-		MakeMaker
-		ModuleBuild
+		ModuleBuildTiny
+		MakeMaker::Fallback
 	),
-	[
-		'DualBuilders' => {
-			'prefer' => 'build',
-		}
-	],
 	qw(
 		MetaYAML
 		MetaJSON
@@ -408,7 +402,7 @@ Dist::Zilla::PluginBundle::Apocalyptic - Let the apocalypse build your dist!
 
 =head1 VERSION
 
-  This document describes v0.004 of Dist::Zilla::PluginBundle::Apocalyptic - released October 25, 2014 as part of Dist-Zilla-PluginBundle-Apocalyptic.
+  This document describes v0.005 of Dist::Zilla::PluginBundle::Apocalyptic - released October 28, 2014 as part of Dist-Zilla-PluginBundle-Apocalyptic.
 
 =head1 DESCRIPTION
 
@@ -493,7 +487,7 @@ This is equivalent to setting this in your dist.ini:
 	[Bugtracker]			; set bugtracker to http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-PluginBundle-Apocalyptic
 	[Homepage]			; set homepage to http://search.cpan.org/dist/Dist-Zilla-PluginBundle-Apocalyptic/
 	[MetaConfig]			; dump dzil config into metadata
-	[ContributorsFromGit]   ; generate our CONTRIBUTORS section by looking at the git history
+	[Git::Contributors]   	; generate our CONTRIBUTORS section by looking at the git history
 	[MetaData::BuiltWith]		; dump entire perl modules we used to build into metadata
 	[Repository]			; set git repository path by looking at git configs
 	git_remote = origin
@@ -506,10 +500,8 @@ This is equivalent to setting this in your dist.ini:
 	[MetaProvides::Package]		; get provides from package definitions in files
 	meta_noindex = 1
 	[License]			; create LICENSE file
-	[MakeMaker]			; create Makefile.PL file
-	[ModuleBuild]			; create Build.PL file
-	[DualBuilders]			; have M::B and EU::MM but select only M::B as prereq
-	prefer = build
+	[ModuleBuildTiny]		; create Build.PL file
+	[MakeMaker::Fallback]	; create Makefile.PL file for older Perls
 	[MetaYAML]			; create META.yml file
 	[MetaJSON]			; create META.json file
 	[ReadmeAnyFromPod]			; create README file
@@ -753,7 +745,7 @@ CPANTS
 
 The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
 
-L<http://cpants.perl.org/dist/overview/Dist-Zilla-PluginBundle-Apocalyptic>
+L<http://cpants.cpanauthors.org/dist/overview/Dist-Zilla-PluginBundle-Apocalyptic>
 
 =item *
 
@@ -833,12 +825,6 @@ L<https://github.com/apocalypse/perl-dist-zilla-pluginbundle-apocalyptic>
 =head1 AUTHOR
 
 Apocalypse <APOCAL@cpan.org>
-
-=head2 CONTRIBUTOR
-
-=for stopwords Apocalypse
-
-Apocalypse <perl@0ne.us>
 
 =head1 COPYRIGHT AND LICENSE
 
